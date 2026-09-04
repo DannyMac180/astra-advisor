@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import subprocess
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
@@ -76,7 +77,7 @@ manifest_path = plugin / ".codex-plugin" / "plugin.json"
 manifest = require_mapping(load_json(manifest_path, "plugin manifest"), "plugin manifest")
 
 require_string(manifest, "name", "plugin manifest", "astra-advisor")
-require_string(manifest, "version", "plugin manifest", "0.1.0")
+require_string(manifest, "version", "plugin manifest", "0.2.0")
 require_string(manifest, "description", "plugin manifest")
 require_string(manifest, "homepage", "plugin manifest", "https://github.com/DannyMac180/astra-advisor#readme")
 require_string(manifest, "repository", "plugin manifest", "https://github.com/DannyMac180/astra-advisor")
@@ -117,6 +118,12 @@ ui_path = skill_root / "agents" / "openai.yaml"
 require(skill_path.is_file(), f"missing orchestration skill: {skill_path}")
 require(operations_path.is_file(), f"missing operations reference: {operations_path}")
 require(ui_path.is_file(), f"missing orchestration UI metadata: {ui_path}")
+if operations_path.is_file():
+    for target in markdown_links(operations_path.read_text(encoding="utf-8")):
+        check_relative_link(target, operations_path.parent, "operations reference link")
+require((plugin / "scripts" / "cost_receipt.py").is_file(), "missing cost receipt calculator")
+require((plugin / "tests" / "test_cost_receipt.py").is_file(), "missing cost receipt tests")
+require((plugin / "pricing" / "2026-09-04.json").is_file(), "missing pricing snapshot")
 
 if skill_path.is_file():
     skill_text = skill_path.read_text(encoding="utf-8")
@@ -201,6 +208,13 @@ for path in plugin.rglob("*"):
     if path.is_file() and path.suffix == ".toml":
         errors.append(f"static role TOML is not allowed: {path.relative_to(plugin)}")
 require(not (plugin / "scripts" / "install-agents.sh").exists(), "companion installer is not allowed")
+
+# Exercise accounting behavior as part of the same local and CI verifier.
+result = subprocess.run(
+    [sys.executable, "-B", "-m", "unittest", "discover", "-s", str(plugin / "tests"), "-p", "test_*.py"],
+    cwd=repo,
+)
+require(result.returncode == 0, "cost receipt tests failed")
 
 if errors:
     print("VERIFY FAILED")

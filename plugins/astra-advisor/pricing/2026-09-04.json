@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-09-04",
+  "verified_on": "2026-09-04",
+  "currency": "USD",
+  "unit": "per_million_tokens",
+  "eligibility": "standard_short_context",
+  "implementation_max_input_tokens": 128000,
+  "models": {
+    "gpt-6-astra": {
+      "input": "10",
+      "cached_input": "1",
+      "output": "50",
+      "promotional": false,
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6-astra"
+    },
+    "gpt-5.6-sol": {
+      "input": "4",
+      "cached_input": "0.4",
+      "output": "20",
+      "promotional": true,
+      "freshness_disclosure": "Promotional pricing verified on 2026-09-04; re-verify before later use.",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    },
+    "gpt-5.6-terra": {
+      "input": "2",
+      "cached_input": "0.2",
+      "output": "12",
+      "promotional": false,
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+    },
+    "gpt-5.6-luna": {
+      "input": "0.2",
+      "cached_input": "0.02",
+      "output": "1.2",
+      "promotional": false,
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+    }
+  },
+  "provenance": {
+    "method": "Official model pages fetched by the recording coordinator.",
+    "context_threshold_note": "The calculator conservatively supports at most 128,000 input tokens per call. This is an implementation safety boundary, not a claim about an official pricing threshold.",
+    "notice": "These rates estimate equivalent API prices only. They do not represent ChatGPT subscription billing or usage-credit consumption."
+  }
+}

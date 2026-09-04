@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "task_id": "illustrative-astra-advisor-task",
+  "illustrative": true,
+  "coverage": {
+    "scope": "whole_task",
+    "agent_roster_complete": true,
+    "final_parent_usage_cutoff": true
+  },
+  "agents": [
+    {
+      "agent_id": "parent-example",
+      "role": "parent",
+      "calls_complete": true
+    },
+    {
+      "agent_id": "delegate-example",
+      "role": "delegate",
+      "calls_complete": true
+    }
+  ],
+  "calls": [
+    {
+      "call_id": "parent-call-1",
+      "agent_id": "parent-example",
+      "model": "gpt-6-astra",
+      "effort": "medium",
+      "aggregation": "atomic",
+      "context": "standard",
+      "context_source": "assumed",
+      "service_tier": "standard",
+      "service_tier_source": "assumed",
+      "usage": {
+        "kind": "observed",
+        "source": "illustrative fixture, not live telemetry",
+        "input_tokens": 1000,
+        "cached_input_tokens": 100,
+        "output_tokens": 200,
+        "reasoning_tokens": 50
+      }
+    },
+    {
+      "call_id": "delegate-call-1",
+      "agent_id": "delegate-example",
+      "model": "gpt-5.6-sol",
+      "effort": "high",
+      "aggregation": "atomic",
+      "context": "standard",
+      "context_source": "assumed",
+      "service_tier": "standard",
+      "service_tier_source": "assumed",
+      "usage": {
+        "kind": "observed",
+        "source": "illustrative fixture, not live telemetry",
+        "input_tokens": 2000,
+        "cached_input_tokens": 500,
+        "output_tokens": 300,
+        "reasoning_tokens": 75
+      }
+    }
+  ]
+}

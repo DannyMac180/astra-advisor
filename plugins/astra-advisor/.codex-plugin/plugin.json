@@ -1,6 +1,6 @@
 {
   "name": "astra-advisor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Codex-native dynamic orchestration with GPT-6 Astra as the primary advisor.",
   "author": {
     "name": "Daniel McAteer",

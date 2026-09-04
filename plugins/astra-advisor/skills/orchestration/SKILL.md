@@ -69,3 +69,30 @@ for Git projects and local otherwise. ChatGPT Work cloud `create_thread` must om
 control; do not dispatch a model-pinned request there by default or use an API-key/CLI
 workaround. Use a future native work tool only when its schema exposes the required
 controls.
+
+## Live delegation and completion receipts
+
+Automatically show a short user-visible lifecycle update for **every** delegation,
+including reviews, before dispatch and on completion or failure. Before dispatch,
+include task name, exact bounded ownership, requested model and effort, and the
+reason for that selection. On return, include agent ID, actual status, and observed
+model/effort with their evidence source; if unavailable say `unobservable`. If they
+differ from the request, show both. A submitted request is not runtime confirmation.
+Keep progress readable; report meaningful changes without polling narration.
+
+At the completion of **every task**, even solo, failed, or blocked tasks, emit an
+`API-EQUIVALENT COST RECEIPT` using the calculator described in the operations
+reference, or a precise unavailable status when usage cannot be observed. Capture
+available usage with source, unique call IDs, agent identity, and scope as work runs.
+Include parent, implementers, and all reviewers before claiming whole-task coverage.
+Do not invent token counts, missing rates, or success percentages. Unknown is not zero.
+
+Distinguish observed tokens from pricing estimates and partial coverage. Show routed
+USD and the same observed tokens repriced at Astra only when comparable; label the
+difference a **same-token API price comparison**, never measured all-Astra behavior,
+actual net task savings, subscription charges, or improved quality/speed. If parent
+usage is missing, label any available delegated-only comparison separately. With no
+subagents there are no delegation savings. Effort is metadata, not a price multiplier.
+Use the versioned snapshot and disclose its date and promotional Sol pricing. Reject
+unsupported pricing regimes rather than silently using standard rates. An illustrative
+fixture is optional and must remain separate from this task's receipt.

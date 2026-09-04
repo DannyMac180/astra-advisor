@@ -74,6 +74,46 @@ effort. Astra accepts the work only after the reviewer returns `ship`; `fix-firs
 requires a new parent verification and fresh review, while `rethink` requires a
 revised plan.
 
+## Live visibility and cost receipts (0.2.0)
+
+Every delegation announces its name, bounded task, selected model and reasoning
+effort, and selection reason. Its result reports actual status and runtime-observed
+settings, or explicitly says those settings are unobservable. These updates also
+cover fresh reviewers. A requested setting is not proof of the realized setting.
+
+Every task ends with an API-equivalent cost receipt. When native tools expose token
+usage, the receipt estimates its USD price using the versioned snapshot and compares
+that same token workload repriced entirely at Astra. It separates whole-task,
+delegated-only, and partial coverage. Missing parent or reviewer usage prevents a
+whole-task claim. Without observed usage, the receipt says why it is unavailable.
+
+The difference is a **same-token API price comparison**. It does not measure what an
+all-Astra run would actually consume, actual net task savings, quality, speed, or a
+change to ChatGPT subscription charges or usage credits. No subagents means no
+delegation savings. Reasoning effort does not multiply the token price.
+
+The [pricing snapshot](plugins/astra-advisor/pricing/2026-09-04.json) records official
+source URLs and standard short-context USD rates per million tokens, verified by
+the recording coordinator on September 4, 2026. These are historical estimates;
+Sol pricing is promotional and may change. The calculator rejects unsupported
+long-context, service-tier, and cache-write cases instead of assuming standard rates.
+It conservatively supports at most 128,000 input tokens per call; this is an
+implementation support boundary, not a claimed official pricing threshold.
+
+Try the clearly labeled illustrative workload (not a receipt for your task):
+
+~~~sh
+python3 plugins/astra-advisor/scripts/cost_receipt.py plugins/astra-advisor/examples/illustrative-usage.json
+sh plugins/astra-advisor/scripts/verify.sh
+~~~
+
+The calculator emits JSON and accepts `--pricing PATH` for another verified snapshot.
+Its input lists agents and unique atomic calls, usage provenance, coverage assertions,
+and explicit pricing eligibility. It validates cached-input and reasoning-output
+subsets, refuses overlapping aggregates, and keeps unknown usage separate from zero.
+See the [operations reference](plugins/astra-advisor/skills/orchestration/references/operations.md)
+for the input contract and receipt policy.
+
 ## ChatGPT app tasks
 
 Separate app tasks require an explicit user request. For an explicit Codex app task,
