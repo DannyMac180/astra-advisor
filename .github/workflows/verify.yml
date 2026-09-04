@@ -1,0 +1,14 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Verify Astra Advisor package
+        run: sh plugins/astra-advisor/scripts/verify.sh

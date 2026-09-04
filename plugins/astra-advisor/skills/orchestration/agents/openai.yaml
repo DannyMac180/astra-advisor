@@ -1,0 +1,4 @@
+interface:
+  display_name: "Astra Advisor Orchestration"
+  short_description: "Route and review work with Astra dynamically"
+  default_prompt: "Use $astra-advisor:orchestration to plan, build, verify, and review this work."

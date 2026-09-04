@@ -1,0 +1,20 @@
+{
+  "name": "astra-advisor",
+  "interface": {
+    "displayName": "Astra Advisor"
+  },
+  "plugins": [
+    {
+      "name": "astra-advisor",
+      "source": {
+        "source": "local",
+        "path": "./plugins/astra-advisor"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
