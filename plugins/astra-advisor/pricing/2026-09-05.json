@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-09-05",
+  "verified_on": "2026-09-05",
+  "currency": "USD",
+  "unit": "per_million_tokens",
+  "eligibility": "standard_short_context",
+  "implementation_max_input_tokens": 272000,
+  "models": {
+    "gpt-6-astra": {
+      "input": "10",
+      "cached_input": "1",
+      "output": "50",
+      "promotional": false,
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-6-astra"
+    },
+    "gpt-5.6-sol": {
+      "input": "4",
+      "cached_input": "0.4",
+      "output": "20",
+      "promotional": true,
+      "freshness_disclosure": "Promotional pricing verified on 2026-09-05; re-verify before later use.",
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"
+    },
+    "gpt-5.6-terra": {
+      "input": "2",
+      "cached_input": "0.2",
+      "output": "12",
+      "promotional": false,
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-terra"
+    },
+    "gpt-5.6-luna": {
+      "input": "0.2",
+      "cached_input": "0.02",
+      "output": "1.2",
+      "promotional": false,
+      "source_url": "https://developers.openai.com/api/docs/models/gpt-5.6-luna"
+    }
+  },
+  "provenance": {
+    "method": "Official model pricing pages fetched on 2026-09-05; all four listed models apply long-context premiums only above 272K input tokens.",
+    "context_threshold_note": "Standard short-context rates apply through 272,000 input tokens inclusive. Above that threshold, the full request uses long-context premiums; this calculator still rejects that unsupported pricing regime. The 2026-09-04 snapshot retains its original conservative 128,000-token boundary.",
+    "notice": "These rates estimate equivalent API prices only. They do not represent ChatGPT subscription billing or usage-credit consumption."
+  }
+}

@@ -92,13 +92,16 @@ all-Astra run would actually consume, actual net task savings, quality, speed, o
 change to ChatGPT subscription charges or usage credits. No subagents means no
 delegation savings. Reasoning effort does not multiply the token price.
 
-The [pricing snapshot](plugins/astra-advisor/pricing/2026-09-04.json) records official
-source URLs and standard short-context USD rates per million tokens, verified by
-the recording coordinator on September 4, 2026. These are historical estimates;
+The default [pricing snapshot](plugins/astra-advisor/pricing/2026-09-05.json) records
+official source URLs and standard short-context USD rates per million tokens,
+verified on September 5, 2026. These are historical estimates;
 Sol pricing is promotional and may change. The calculator rejects unsupported
 long-context, service-tier, and cache-write cases instead of assuming standard rates.
-It conservatively supports at most 128,000 input tokens per call; this is an
-implementation support boundary, not a claimed official pricing threshold.
+It supports up to 272,000 input tokens per call, inclusive, matching the documented
+short-context pricing range for all four listed models. Calls above 272,000 require
+long-context premiums and remain unsupported. The original
+[September 4 snapshot](plugins/astra-advisor/pricing/2026-09-04.json) is unchanged;
+pass it with `--pricing` to reproduce its conservative 128,000-token boundary.
 
 Try the clearly labeled illustrative workload (not a receipt for your task):
 
