@@ -12,7 +12,8 @@ from pathlib import Path
 
 PLUGIN = Path(__file__).resolve().parents[1]
 SCRIPT = PLUGIN / "scripts" / "cost_receipt.py"
-PRICING = PLUGIN / "pricing" / "2026-09-04.json"
+PRICING = PLUGIN / "pricing" / "2026-09-05.json"
+HISTORICAL_PRICING = PLUGIN / "pricing" / "2026-09-04.json"
 EXAMPLE = PLUGIN / "examples" / "illustrative-usage.json"
 SPEC = importlib.util.spec_from_file_location("cost_receipt", SCRIPT)
 assert SPEC and SPEC.loader
@@ -246,7 +247,7 @@ class CostReceiptTests(unittest.TestCase):
             ("input_tokens", -1, "non-negative"),
             ("cached_input_tokens", 1001, "subset"),
             ("reasoning_tokens", 201, "subset"),
-            ("input_tokens", 128001, "implementation boundary"),
+            ("input_tokens", 272001, "implementation boundary"),
         ]
         for field, value, message in cases:
             with self.subTest(field=field, value=value):
@@ -277,7 +278,70 @@ class CostReceiptTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 0, completed.stderr)
         result = json.loads(completed.stdout)
         self.assertTrue(result["illustrative"])
+        self.assertEqual(result["pricing"]["snapshot_date"], "2026-09-05")
+
+    def test_supported_input_boundaries_for_each_model(self) -> None:
+        expected = {
+            "gpt-6-astra": ("1.29", "1.29001", "2.73"),
+            "gpt-5.6-sol": ("0.516", "0.516004", "1.092"),
+            "gpt-5.6-terra": ("0.2584", "0.258402", "0.5464"),
+            "gpt-5.6-luna": ("0.02584", "0.0258402", "0.05464"),
+        }
+        for model, costs in expected.items():
+            for tokens, cost in zip((128000, 128001, 272000), costs):
+                with self.subTest(model=model, input_tokens=tokens):
+                    payload = whole_task()
+                    payload["agents"] = payload["agents"][:1]
+                    payload["calls"] = [atomic_call(
+                        "p1", "p", model, input_tokens=tokens, cached_input_tokens=0,
+                    )]
+                    result = self.calculate(payload)
+                    self.assertEqual(result["routed_api_price_usd"], cost)
+                    payload["calls"][0]["usage"]["input_tokens"] = 272001
+                    self.assert_invalid(payload, "implementation boundary")
+
+    def test_cache_heavy_parent_above_128k_keeps_exact_comparison(self) -> None:
+        payload = whole_task()
+        payload["calls"][0] = atomic_call(
+            "p1", "p", "gpt-6-astra", input_tokens=170000,
+            cached_input_tokens=160000, output_tokens=1000,
+        )
+        result = self.calculate(payload)
+        self.assertEqual(result["calls"][0]["cost_usd"], "0.31")
+        self.assertEqual(result["routed_api_price_usd"], "0.31667")
+        comparison = result["same_token_api_price_comparison"]
+        self.assertEqual(comparison["same_tokens_at_astra_api_price_usd"], "0.3555")
+        self.assertEqual(comparison["api_price_difference_usd"], "0.03883")
+
+    def test_historical_snapshot_retains_128k_boundary(self) -> None:
+        payload = whole_task()
+        result = cost_receipt.calculate_receipt(payload, HISTORICAL_PRICING)
+        self.assertEqual(result["routed_api_price_usd"], "0.02577")
         self.assertEqual(result["pricing"]["snapshot_date"], "2026-09-04")
+        payload["calls"][0]["usage"]["input_tokens"] = 128001
+        with self.assertRaisesRegex(cost_receipt.ReceiptError, "boundary of 128000"):
+            cost_receipt.calculate_receipt(payload, HISTORICAL_PRICING)
+
+    def test_cli_default_prices_above_128k_and_rejects_long_context(self) -> None:
+        payload = whole_task()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "usage.json"
+            for tokens, exit_code in ((170000, 0), (272001, 2)):
+                with self.subTest(input_tokens=tokens):
+                    payload["calls"][0]["usage"]["input_tokens"] = tokens
+                    path.write_text(json.dumps(payload), encoding="utf-8")
+                    completed = subprocess.run(
+                        [sys.executable, str(SCRIPT), str(path)],
+                        capture_output=True, text=True, check=False,
+                    )
+                    self.assertEqual(completed.returncode, exit_code, completed.stderr)
+                    result = json.loads(completed.stdout)
+                    if exit_code == 0:
+                        self.assertEqual(result["pricing"]["snapshot_date"], "2026-09-05")
+                        self.assertEqual(result["status"], "observed_tokens_api_estimate")
+                    else:
+                        self.assertEqual(result["status"], "invalid")
+                        self.assertIn("272000", result["errors"][0])
 
     def test_cli_rejects_nonfinite_json_tokens(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

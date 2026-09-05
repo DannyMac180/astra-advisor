@@ -502,7 +502,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--pricing",
         type=Path,
-        default=Path(__file__).resolve().parent.parent / "pricing" / "2026-09-04.json",
+        default=Path(__file__).resolve().parent.parent / "pricing" / "2026-09-05.json",
         help="versioned pricing snapshot JSON",
     )
     return parser

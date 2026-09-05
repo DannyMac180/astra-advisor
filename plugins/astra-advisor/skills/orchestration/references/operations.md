@@ -157,7 +157,7 @@ No API keys, external inference CLIs, billing-account queries, or dashboard are 
 Every task completion requires a visible receipt, including a task with no delegation
 or no accessible token telemetry. The calculator is Python standard library only:
 [calculator](../../../scripts/cost_receipt.py),
-[pricing snapshot](../../../pricing/2026-09-04.json).
+[pricing snapshot](../../../pricing/2026-09-05.json).
 Resolve these paths relative to this installed reference, not a guessed cache version.
 
 Use only non-overlapping observed usage with an explicit source. Cumulative telemetry
@@ -174,7 +174,7 @@ is required; unknown or unsupported long-context, service-tier, or cache-write p
 must not silently inherit standard rates. Effort is recorded without a rate multiplier.
 
 The snapshot records USD per million tokens and official source URLs, with a
-2026-09-04 verification date supplied by the recording coordinator. It is a historical
+2026-09-05 verification date. It is a historical
 snapshot, not a live-price guarantee; Sol rates are promotional. Disclose the snapshot
 date and freshness when showing an estimate. Use a newly verified versioned snapshot
 if current prices are required. Do not silently change historical receipts.
@@ -232,7 +232,12 @@ or aggregate ownership is unclear, mark that coverage unavailable rather than
 inventing calls. Keep preparation-turn usage separate from the implementation turn
 when that is the declared task scope.
 
-The bundled calculator conservatively caps each call at 128,000 input tokens. This
-is an implementation support boundary, not an official model pricing threshold.
+The default snapshot supports up to 272,000 input tokens per call, inclusive, using
+the documented short-context rates for all four listed models. Input length alone
+does not establish service-tier eligibility. Calls above 272,000 input tokens require
+long-context premiums and remain unsupported; do not bypass the guard or relabel
+those calls as standard to obtain an estimate. The original
+[2026-09-04 snapshot](../../../pricing/2026-09-04.json) retains its conservative
+128,000-token boundary and can still be selected with `--pricing` for historical runs.
 Missing cache counts remain unknown; provide an explicit zero only when supported
 by the usage source. Unknown usage fields are rejected to avoid ignoring cache writes.

@@ -123,7 +123,8 @@ if operations_path.is_file():
         check_relative_link(target, operations_path.parent, "operations reference link")
 require((plugin / "scripts" / "cost_receipt.py").is_file(), "missing cost receipt calculator")
 require((plugin / "tests" / "test_cost_receipt.py").is_file(), "missing cost receipt tests")
-require((plugin / "pricing" / "2026-09-04.json").is_file(), "missing pricing snapshot")
+for date in ("2026-09-04", "2026-09-05"):
+    require((plugin / "pricing" / f"{date}.json").is_file(), f"missing pricing snapshot: {date}")
 
 if skill_path.is_file():
     skill_text = skill_path.read_text(encoding="utf-8")
